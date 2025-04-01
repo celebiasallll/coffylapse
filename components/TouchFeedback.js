@@ -1,71 +1,62 @@
-import { useState } from 'react';
-import { motion } from '../utils/animationUtils';
-import { playSound } from '../utils/soundUtils';
+import React, { useState } from 'react';
 
 /**
- * TouchFeedback component - Enhances any clickable element with touch-friendly feedback
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - The element to wrap with touch feedback
- * @param {string} props.className - Additional CSS classes
- * @param {boolean} props.haptic - Whether to use haptic feedback (on supported devices)
- * @param {Function} props.onClick - Click handler
- * @param {boolean} props.disabled - Whether the component is disabled
+ * Wrapper component that provides tactile feedback for touch interactions
  */
 export default function TouchFeedback({ 
   children, 
-  className = "", 
-  haptic = true,
-  onClick,
+  onPress, 
+  className = '', 
+  activeClassName = 'touch-active',
   disabled = false,
   ...props 
 }) {
-  const [isPressed, setIsPressed] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   
-  const triggerHaptic = () => {
-    if (haptic && navigator?.vibrate) {
-      navigator.vibrate(20); // Short, subtle vibration
+  const handleTouchStart = (e) => {
+    if (disabled) return;
+    setIsActive(true);
+  };
+  
+  const handleTouchEnd = (e) => {
+    if (disabled) return;
+    setIsActive(false);
+    
+    // Only trigger onPress if touch ends within the element
+    if (onPress) {
+      // Prevent default to avoid double-clicks or ghost clicks
+      e.preventDefault();
+      onPress(e);
     }
   };
   
-  const handlePress = () => {
-    if (disabled) return;
-    setIsPressed(true);
-    triggerHaptic();
-  };
-  
-  const handleRelease = () => {
-    setIsPressed(false);
+  const handleTouchCancel = () => {
+    setIsActive(false);
   };
   
   const handleClick = (e) => {
     if (disabled) return;
-    
-    // Play the click sound
-    try {
-      playSound('click');
-    } catch (err) {
-      console.warn('Could not play click sound:', err);
+    // For desktop/mouse users
+    if (onPress) {
+      onPress(e);
     }
-    
-    if (onClick) onClick(e);
   };
+
+  const baseClassName = `touch-feedback ${className} ${isActive ? activeClassName : ''} ${disabled ? 'disabled' : ''}`;
   
   return (
-    <motion.div
-      className={`touch-feedback ${className} ${isPressed ? 'touch-active' : ''}`}
-      onTouchStart={handlePress}
-      onTouchEnd={handleRelease}
-      onTouchCancel={handleRelease}
-      onMouseDown={handlePress}
-      onMouseUp={handleRelease}
-      onMouseLeave={handleRelease}
+    <div
+      className={baseClassName}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
       onClick={handleClick}
-      whileTap={{ scale: 0.97 }}
-      initial={false}
+      role={onPress ? "button" : undefined}
+      tabIndex={onPress && !disabled ? 0 : undefined}
+      aria-disabled={disabled}
       {...props}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

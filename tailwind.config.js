@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -15,6 +16,10 @@ module.exports = {
         'coffee-medium': '#a57861',
         'coffee-light': '#e4d4cf',
         'coffee-bg': '#f4ece8',
+        primary: '#4F46E5',
+        secondary: '#10B981',
+        'primary-dark': '#3730A3',
+        'secondary-dark': '#059669',
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],

@@ -29,18 +29,13 @@ try {
     }
   });
   
-  // Install dependencies fresh
-  console.log('Installing dependencies...');
+  // Reinstall dependencies
+  console.log('Reinstalling dependencies...');
   execSync('npm install', { stdio: 'inherit' });
   
-  console.log('\nClean installation complete! You can now run the app with:');
-  console.log('npm run dev');
+  console.log('Dependency reset completed successfully!');
 } catch (error) {
-  console.error('Error during cleanup:', error.message);
-  console.log('\nManual steps:');
-  console.log('1. Delete node_modules folder');
-  console.log('2. Delete .next folder');
-  console.log('3. Delete package-lock.json file');
-  console.log('4. Run: npm install');
-  console.log('5. Run: npm run dev');
+  console.error('Error during reset process:', error.message);
+  console.log('Please try resolving the issue manually or contact support.');
+  process.exit(1);
 }

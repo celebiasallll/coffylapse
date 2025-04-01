@@ -118,23 +118,62 @@ export const handleGlobalError = (error, { silent = false } = {}) => {
   return errorObj;
 };
 
-// Function to apply global error handling to the application
+/**
+ * Initialize global error handlers for better debugging
+ */
 export const initGlobalErrorHandlers = () => {
   if (typeof window === 'undefined') return;
-  
-  // Handle uncaught promise rejections
-  window.addEventListener('unhandledrejection', (event) => {
-    event.preventDefault();
-    handleGlobalError(event.reason, { silent: false });
-  });
-  
-  // Handle uncaught exceptions
+
+  // Override console.error to add more context
+  const originalError = console.error;
+  console.error = (...args) => {
+    // Log original error
+    originalError(...args);
+    
+    // Capture and format stack trace for easier debugging
+    try {
+      throw new Error('Console error stack trace');
+    } catch (e) {
+      originalError('Error occurred at:', e.stack.split('\n').slice(1, 4).join('\n'));
+    }
+  };
+
+  // Handle uncaught errors
   window.addEventListener('error', (event) => {
-    event.preventDefault();
-    handleGlobalError(event.error || new Error(event.message), { silent: false });
+    console.warn('Uncaught error:', event.error?.message || event.message);
+    
+    // Prevent default behavior to avoid full screen errors on mobile
+    if (event.error?.message?.includes('Uncaught')) {
+      event.preventDefault();
+    }
+    
+    // You can implement error reporting here
+    // reportErrorToAnalytics(event.error);
   });
-  
+
+  // Handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    console.warn('Unhandled promise rejection:', event.reason);
+    
+    // You can implement error reporting here
+    // reportErrorToAnalytics(event.reason);
+  });
+
   debugLog('Global error handlers initialized');
+};
+
+/**
+ * Safe function execution with error handling
+ */
+export const tryCatch = (fn, fallback = null, errorHandler = console.error) => {
+  try {
+    return fn();
+  } catch (error) {
+    if (errorHandler) {
+      errorHandler(error);
+    }
+    return fallback;
+  }
 };
 
 export default {
@@ -147,5 +186,6 @@ export default {
   createGameLogicError,
   getUserFriendlyError,
   handleGlobalError,
-  initGlobalErrorHandlers
+  initGlobalErrorHandlers,
+  tryCatch
 };

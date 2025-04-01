@@ -14,8 +14,13 @@
 }
 
 @layer base {
+  html {
+    @apply text-base scroll-smooth;
+  }
+
   body {
-    @apply bg-coffee-darker text-coffee-light font-sans antialiased;
+    @apply bg-coffee-bg text-coffee-darker antialiased;
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -28,6 +33,11 @@
 
   button:focus, input:focus, textarea:focus, select:focus {
     @apply outline-none ring-2 ring-coffee-medium/50;
+  }
+
+  /* Mobil dokunmatik cihazlarda daha iyi etkileşim */
+  button, a, input[type="button"], input[type="submit"] {
+    @apply touch-manipulation;
   }
 }
 
@@ -82,6 +92,26 @@
 
   .coffee-gradient {
     @apply bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 bg-clip-text text-transparent;
+  }
+
+  .container-responsive {
+    @apply w-full px-4 sm:px-6 md:px-8 mx-auto max-w-7xl;
+  }
+
+  /* Mobil menü için */
+  .mobile-menu-overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity;
+  }
+
+  /* Dokunmatik hedefler için minimum boyut (44x44px Apple önerisi) */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Form elemanları için mobil uyumlu stiller */
+  .form-input-mobile {
+    @apply px-4 py-3 text-base rounded-lg shadow-sm border-coffee-light 
+    focus:ring-primary focus:border-primary;
   }
 }
 
@@ -153,6 +183,10 @@ input, button, a {
   .mobile-text-adjust {
     font-size: 16px; /* Prevent zoom on input focus */
   }
+  
+  html {
+    font-size: 15px;
+  }
 }
 
 /* Improve touch targets for mobile */
@@ -166,6 +200,14 @@ button, a, [role="button"] {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
@@ -228,4 +270,97 @@ button, a, [role="button"] {
 .coffee-dark-texture {
   background-color: var(--color-coffee-darker);
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23462917' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Full height fix for mobile browsers */
+html, body {
+  height: -webkit-fill-available;
+  overflow: hidden;
+}
+
+/* Custom viewport height property for mobile browsers */
+:root {
+  --vh: 1vh;
+}
+
+/* Use the custom property for height calculations */
+.mobile-height-fix {
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Improve touch experience */
+@media (max-width: 768px) {
+  * {
+    touch-action: manipulation;
+  }
+  
+  /* Prevent double-tap zoom */
+  button, a {
+    touch-action: manipulation;
+  }
+  
+  /* Hide scrollbar on mobile */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+}
+
+/* Improved mobile compatibility */
+.mobile-optimized {
+  /* Prevent unwanted element highlighting */
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Better touch handling */
+  touch-action: manipulation;
+  
+  /* Prevent zoom on forms */
+  font-size: 16px;
+}
+
+/* Mobile container adjustments */
+.mobile-game-container {
+  max-width: 100%;
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+  
+  .h-screen, .max-h-screen {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Ensure mobile readability */
+@media (max-width: 768px) {
+  .mobile-text-boost {
+    font-size: 1.1em;
+  }
+  
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve contrast for better readability */
+  .mobile-text-contrast {
+    text-shadow: 0 1px 0 rgba(0,0,0,0.1);
+  }
+}
+
+/* Dark mode için temel stiller */
+@media (prefers-color-scheme: dark) {
+  .dark\:coffee-style {
+    @apply bg-coffee-darker text-coffee-light;
+  }
+}
+
+/* Daha yumuşak kaydırma için */
+.smooth-scroll {
+  scroll-behavior: smooth;
 }

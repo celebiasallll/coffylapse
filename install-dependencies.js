@@ -1,4 +1,4 @@
-node reset-dependencies.jsconst { execSync } = require('child_process');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -32,7 +32,7 @@ try {
   execSync('npm install framer-motion@latest', { stdio: 'inherit' });
   
   console.log('Installing tailwind forms plugin...');
-  execSync('npm install @tailwindcss/forms', { stdio: 'inherit' });
+  execSync('npm install @tailwindcss/forms --save-dev', { stdio: 'inherit' });
   
   console.log('All dependencies installed successfully!');
   console.log('You can now run the application with: npm run dev');
@@ -41,5 +41,5 @@ try {
   console.log('Please try installing them manually:');
   console.log('npm install');
   console.log('npm install framer-motion@latest');
-  console.log('npm install @tailwindcss/forms');
+  console.log('npm install @tailwindcss/forms --save-dev');
 }

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Web3Provider } from '../components/Web3Provider';
 import Layout from '../components/Layout';
 import useGameStore from '../store/gameStore';
@@ -17,8 +18,8 @@ function MyApp({ Component, pageProps }) {
       // Initialize error handlers first
       initGlobalErrorHandlers();
       
-      // Initialize mobile optimizations
-      initMobileOptimizations();
+      // Initialize mobile optimizations with enhanced settings
+      const cleanupMobile = initMobileOptimizations();
       
       // Preload character images including SVGs
       preloadCharacterImages().then(() => {
@@ -33,6 +34,11 @@ function MyApp({ Component, pageProps }) {
           }
         });
       }
+      
+      // Clean up functions when component unmounts
+      return () => {
+        if (cleanupMobile) cleanupMobile();
+      };
     }
   }, []);
 
